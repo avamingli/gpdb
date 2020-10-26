@@ -37,6 +37,8 @@
 #include "commands/defrem.h"
 #include "foreign/fdwapi.h"
 #include "funcapi.h"
+#include "commands/copy.h"
+#include "cdb/cdbsreh.h"
 #include "nodes/execnodes.h"
 #include "nodes/relation.h"
 #include "optimizer/clauses.h"
@@ -775,6 +777,16 @@ exttable_EndForeignScan(ForeignScanState *node)
 
 	if (node->is_squelched)
 		external_stopscan(fdw_state->ess_ScanDesc);
+
+	if (Gp_role == GP_ROLE_DISPATCH) {
+		CopyState cstate = fdw_state->ess_ScanDesc->fs_pstate;
+		if (cstate) {
+			CdbSreh	 *cdbsreh = cstate->cdbsreh;
+			uint64	total_rejected_from_qd = cdbsreh->rejectcount;
+			if (total_rejected_from_qd > 0)
+				ReportSrehResults(cdbsreh, total_rejected_from_qd);
+		}
+	}
 
 	external_endscan(fdw_state->ess_ScanDesc);
 }
