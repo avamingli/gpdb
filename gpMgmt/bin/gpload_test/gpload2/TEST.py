@@ -162,7 +162,7 @@ masterPort = getPortMasterOnly()
 
 
 def write_config_file(version='1.0.0.1', database='reuse_gptest', user=os.environ.get('USER'), host=hostNameAddrs, port=masterPort, config='config/config_file', local_host=[hostNameAddrs], file='data/external_file_01.txt', input_port='8081', port_range=None,
-    ssl=None,columns=None, format='text', log_errors=None, error_limit=None, delimiter="'|'", encoding=None, escape=None, null_as=None, fill_missing_fields=None, quote=None, header=None, transform=None, transform_config=None, max_line_length=None, 
+    ssl=None,columns=None, format='text', force_not_null=[], log_errors=None, error_limit=None, delimiter="'|'", encoding=None, escape=None, null_as=None, fill_missing_fields=None, quote=None, header=None, transform=None, transform_config=None, max_line_length=None, 
     table='texttable', mode='insert', update_columns=['n2'], update_condition=None, match_columns=['n1','s1','s2'], staging_table=None, mapping=None, externalSchema=None, preload=True, truncate=False, reuse_tables=True, fast_match=None,
     sql=False, before=None, after=None, error_table=None):
 
@@ -213,6 +213,10 @@ def write_config_file(version='1.0.0.1', database='reuse_gptest', user=os.enviro
         f.write("\n    - ESCAPE: "+escape)
     if null_as:
         f.write("\n    - NULL_AS: "+null_as)
+    if force_not_null:
+        f.write("\n    - FORCE_NOT_NULL:")
+        for c in force_not_null:
+            f.write("\n           - "+c)
     if fill_missing_fields:
         f.write("\n    - FILL_MISSING_FIELDS: "+str(fill_missing_fields))
     if quote:
@@ -1046,3 +1050,50 @@ def test_59_gpload_yaml_wrong_port():
     copy_data('external_file_01.txt','data_file.txt')
     write_config_file(port='111111',format='text',file='data_file.txt',table='texttable')
 
+@prepare_before_test(num=301, times=1)
+def test_301_gpload_yaml_with_header():
+    "301 gpload yaml config with header true"
+    copy_data('external_file_301.txt','data_file.txt')
+    write_config_file(config='config/config_file',format='text',file='data_file.txt',table='texttable', header='true')
+
+@prepare_before_test(num=310, times=1)
+def test_310_gpload_yaml_with_error_limit_0():
+    "310 gpload yaml config with error limit, useless value 0"
+    copy_data('external_file_301.txt','data_file.txt')
+    write_config_file(format='text',file='data_file.txt',table='texttable', error_limit=0, header='true')
+
+@prepare_before_test(num=311, times=1)
+def test_311_gpload_yaml_with_error_limit_1():
+    "311 gpload yaml config with error limit, invalid value 1"
+    copy_data('external_file_301.txt','data_file.txt')
+    write_config_file(format='text',file='data_file.txt',table='texttable', error_limit=1, header='true')
+
+@prepare_before_test(num=312, times=1)
+def test_312_gpload_yaml_with_error_limit_2_not_reached():
+    "312 gpload yaml config with error limit, reached"
+    copy_data('external_file_312.txt','data_file.txt')
+    write_config_file(format='text',file='data_file.txt',table='texttable', error_limit=2) 
+
+@prepare_before_test(num=313, times=1)
+def test_313_gpload_yaml_with_error_limit_2_reached():
+    "313 gpload yaml config with error limit, not reached"
+    copy_data('external_file_312.txt','data_file.txt')
+    write_config_file(format='text',file='data_file.txt',table='texttable', error_limit=3) 
+
+@prepare_before_test(num=314, times=1)
+def test_314_gpload_yaml_with_log_errors():
+    "314 gpload yaml config with log errors"
+    copy_data('external_file_312.txt','data_file.txt')
+    write_config_file(format='text',file='data_file.txt',table='texttable', error_limit=3, log_errors=True) 
+
+@prepare_before_test(num=351, times=1)
+def test_351_gpload_yaml_force_not_null_is_true():
+    "351 gpload yaml config force not null is true"
+    copy_data('external_file_351.csv','data_file.csv')
+    write_config_file(format='csv',file='data_file.csv',table='csvtable', force_not_null=['make'], delimiter="','") 
+
+@prepare_before_test(num=352, times=1)
+def test_352_gpload_yaml_force_not_null_is_false():
+    "352 gpload yaml config force not null is false"
+    copy_data('external_file_351.csv','data_file.csv')
+    write_config_file(format='csv',file='data_file.csv',table='csvtable', delimiter="','") 
