@@ -656,7 +656,31 @@ external_insert(ExternalInsertDesc extInsertDesc, TupleTableSlot *slot)
 
 	/* Open our output file or output stream if not yet open */
 	if (!extInsertDesc->ext_file && !extInsertDesc->ext_noop)
+	{
 		open_external_writable_source(extInsertDesc);
+		if (pstate->header_line)
+		{
+			// write table columns here, file must be csv
+			bool		hdr_delim = false;
+			ListCell   *cur;
+
+			foreach(cur, pstate->attnumlist)
+			{
+				int			attnum = lfirst_int(cur);
+				char	   *colname;
+
+				if (hdr_delim)
+					CopySendChar(pstate, pstate->delim[0]);
+				hdr_delim = true;
+
+				colname = NameStr(TupleDescAttr(tupDesc, attnum - 1)->attname);
+
+				CopyAttributeOutCSV(pstate, colname, false,
+									list_length(pstate->attnumlist) == 1);
+			}
+			CopySendEndOfRow(pstate);
+		}
+	}
 
 	/*
 	 * deconstruct the tuple and format it into text
@@ -1333,11 +1357,14 @@ open_external_writable_source(ExternalInsertDesc extInsertDesc)
 						 extInsertDesc->ext_custom_formatter_params);
 
 	/* actually open the external source */
+	bool header_line = extInsertDesc->ext_pstate->header_line;
 	extInsertDesc->ext_file = url_fopen(extInsertDesc->ext_uri,
 										true /* forwrite */ ,
 										&extvar,
 										extInsertDesc->ext_pstate,
 										NULL);
+	// recover header_line back here due to url_curl will reset it to 0
+	extInsertDesc->ext_pstate->header_line = header_line;
 }
 
 /*
@@ -1386,7 +1413,7 @@ external_getdata(URL_FILE *extfile, CopyState pstate, void *outbuf, int maxread)
 }
 
 /*
- * send a chunk of data from the external data file.
+ * send a chunk of data to the external data file.
  */
 static void
 external_senddata(URL_FILE *extfile, CopyState pstate)

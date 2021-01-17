@@ -233,7 +233,7 @@ static Datum CopyReadBinaryAttribute(CopyState cstate,
 									 Oid typioparam, int32 typmod,
 									 bool *isnull);
 static void CopyAttributeOutText(CopyState cstate, char *string);
-static void CopyAttributeOutCSV(CopyState cstate, char *string,
+void CopyAttributeOutCSV(CopyState cstate, char *string,
 								bool use_quote, bool single_attr);
 
 /* Low-level communications functions */
@@ -242,7 +242,7 @@ static void ReceiveCopyBegin(CopyState cstate);
 static void SendCopyEnd(CopyState cstate);
 static void CopySendData(CopyState cstate, const void *databuf, int datasize);
 static void CopySendString(CopyState cstate, const char *str);
-static void CopySendChar(CopyState cstate, char c);
+void CopySendChar(CopyState cstate, char c);
 static int	CopyGetData(CopyState cstate, void *databuf, int datasize);
 static void CopySendInt32(CopyState cstate, int32 val);
 static bool CopyGetInt32(CopyState cstate, int32 *val);
@@ -549,7 +549,7 @@ CopySendString(CopyState cstate, const char *str)
 	appendBinaryStringInfo(cstate->fe_msgbuf, str, strlen(str));
 }
 
-static void
+void
 CopySendChar(CopyState cstate, char c)
 {
 	appendStringInfoCharMacro(cstate->fe_msgbuf, c);
@@ -7287,7 +7287,7 @@ CopyAttributeOutText(CopyState cstate, char *string)
  * Send text representation of one attribute, with conversion and
  * CSV-style escaping
  */
-static void
+void
 CopyAttributeOutCSV(CopyState cstate, char *string,
 					bool use_quote, bool single_attr)
 {

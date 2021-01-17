@@ -317,6 +317,8 @@ extern List *CopyGetAttnums(TupleDesc tupDesc, Relation rel, List *attnamelist);
 extern void CopyOneRowTo(CopyState cstate, TupleTableSlot *slot);
 extern void CopyOneCustomRowTo(CopyState cstate, bytea *value);
 extern void CopySendEndOfRow(CopyState cstate);
+extern void CopyAttributeOutCSV(CopyState cstate, char *string, bool use_quote, bool single_attr);
+extern void CopySendChar(CopyState cstate, char c);
 extern char *limit_printout_length(const char *str);
 extern void truncateEol(StringInfo buf, EolType	eol_type);
 extern void truncateEolStr(char *str, EolType eol_type);

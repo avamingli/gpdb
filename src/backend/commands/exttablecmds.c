@@ -689,13 +689,6 @@ transformFormatOpts(char formattype, List *formatOpts, int numcols, bool iswrita
 					ereport(NOTICE,
 							(errmsg("HEADER means that each one of the data files has a header row")));
 				}
-				else
-				{
-					/* WET */
-					ereport(ERROR,
-							(errcode(ERRCODE_GP_FEATURE_NOT_YET),
-							errmsg("HEADER is not yet supported for writable external tables")));
-				}
 			}
 		}
 
