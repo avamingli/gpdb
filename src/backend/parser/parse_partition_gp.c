@@ -367,7 +367,7 @@ deduceImplicitRangeBounds(ParseState *pstate, Relation parentrel, List *stmts, C
 	 * This works slightly differently, depending on whether this is a
 	 * CREATE TABLE or ALTER TABLE SET SUBPARTITION TEMPLATE command to create
 	 * a whole new set of child partitions of a parent table, or an ALTER TABLE
-	 * ADD PARTTION to add to an existing set of sibling partitions.
+	 * ADD PARTITION to add to an existing set of sibling partitions.
 	 */
 	if (origin != ORIGIN_GP_CLASSIC_ALTER_GEN)
 	{

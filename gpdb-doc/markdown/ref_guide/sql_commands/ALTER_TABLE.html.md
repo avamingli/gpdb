@@ -822,7 +822,7 @@ ALTER TABLE distributors
     SET (compresstype=zstd, compresslevel=3);
 ```
 
-### <a id="examples_modern"></a>Modern Syntax Partioning Examples
+### <a id="examples_modern"></a>Modern Syntax Partitioning Examples
 
 Attach a partition to a range-partitioned table:
 
@@ -859,7 +859,7 @@ ALTER TABLE measurement
     DETACH PARTITION measurement_y2015m12;
 ```
 
-### <a id="examples_classic"></a>Classic Syntax Partioning Examples
+### <a id="examples_classic"></a>Classic Syntax Partitioning Examples
 
 Add a new partition to a partitioned table:
 

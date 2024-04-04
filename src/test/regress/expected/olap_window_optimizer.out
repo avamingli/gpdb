@@ -221,7 +221,7 @@ select cn,
   4 |   7
 (4 rows)
 
----- 4 -- Partitioned, non-ordered window specifications -- OVER (PARTTION BY ...) ----
+---- 4 -- Partitioned, non-ordered window specifications -- OVER (PARTITION BY ...) ----
 -- !
 select row_number() over (partition by cn), cn, pn 
 from sale; -- mvd 2->1

@@ -217,7 +217,7 @@ select * from gp_toolkit.gp_stats_missing where smitable='toolkit_miss_stat_mv';
 
 drop materialized view toolkit_miss_stat_mv;
 drop table toolkit_miss_stat;
--- test partitioned table. Intermediate parittions should never be shown, root partition should be shown
+-- test partitioned table. Intermediate partitions should never be shown, root partition should be shown
 -- if any leaf hasn't been analyzed, OR all leaves are empty and have been analyzed
 create table deep_part ( i int, j int, k int, s char(5)) with (autovacuum_enabled=false)
 distributed by (i)

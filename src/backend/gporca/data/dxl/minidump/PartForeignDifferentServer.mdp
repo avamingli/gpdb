@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dxl:DXLMessage xmlns:dxl="http://greenplum.com/dxl/2010/12/">
 <dxl:Comment><![CDATA[
-Objective: Selecting foreign paritions and non-foreign partitions with different foreign servers
+Objective: Selecting foreign partitions and non-foreign partitions with different foreign servers
 Should create 2 dynamic foreign scans and 1 dynamic table scan
 
 CREATE EXTENSION file_fdw;

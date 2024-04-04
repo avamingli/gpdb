@@ -101,7 +101,7 @@ select cn,
   sum(cn) over (order by cn range '1'::float8 preceding)
   from customer; -- this, however, should work
 
----- 4 -- Partitioned, non-ordered window specifications -- OVER (PARTTION BY ...) ----
+---- 4 -- Partitioned, non-ordered window specifications -- OVER (PARTITION BY ...) ----
 
 -- !
 select row_number() over (partition by cn), cn, pn 

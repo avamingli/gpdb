@@ -36,7 +36,7 @@ insert into rootTab select i%10 from generate_series(0,4)i;
 analyze rootTab;
 select tablename, attname,inherited,histogram_bounds from pg_stats where tablename like 'root%' order by tablename;
 
--- 2. Update rootTabLeaf1 to check, if it is re-sampled when a new partiton is attached.
+-- 2. Update rootTabLeaf1 to check, if it is re-sampled when a new partition is attached.
 -- These should not be present in the root stats, after attach/detach of partition
 insert into rootTabLeaf1 select i%10 from generate_series(5,9)i;
 
@@ -92,7 +92,7 @@ insert into rootTab select i%10 from generate_series(0,4)i;
 analyze rootTab;
 select tablename, attname,inherited,histogram_bounds from pg_stats where tablename like 'root%' order by tablename;
 
--- 2. Update rootTabLeaf1 to check, if it is re-sampled when a new partiton is attached
+-- 2. Update rootTabLeaf1 to check, if it is re-sampled when a new partition is attached
 -- These should not be present in the root stats, after attach/detach of partition
 insert into rootTabLeaf1 select i%10 from generate_series(5,9)i;
 
@@ -167,7 +167,7 @@ insert into rootTabLeaf2 select i%20 from generate_series(10,19)i;
 analyze rootTabLeaf2;
 select tablename, attname,inherited,histogram_bounds from pg_stats where tablename like 'root%' order by tablename;
 
--- 4. Update rootTabLeaf1 to check, if it is analyzed when a new partiton is attached.
+-- 4. Update rootTabLeaf1 to check, if it is analyzed when a new partition is attached.
 -- These should not be present in the root stats, after attach/detach of partition
 insert into rootTabLeaf1 select i%10 from generate_series(5,9)i;
 
@@ -233,7 +233,7 @@ select tablename, attname,inherited,histogram_bounds from pg_stats where tablena
 create table rootTabLeaf2(a int);
 insert into rootTabLeaf2 select i%20 from generate_series(10,19)i;
 
--- 4. Update rootTabLeaf1 to check, if it is analyzed when a new partiton is attached.
+-- 4. Update rootTabLeaf1 to check, if it is analyzed when a new partition is attached.
 -- These should not be present in the root stats, after attach/detach of partition
 insert into rootTabLeaf1 select i%10 from generate_series(5,9)i;
 
@@ -286,7 +286,7 @@ create table rootTabLeaf2(a int);
 insert into rootTabLeaf2 select i%20 from generate_series(10,19)i;
 analyze rootTabLeaf2;
 
--- 3. Update rootTabLeaf1 to check, if it is analyzed when a new partiton is attached.
+-- 3. Update rootTabLeaf1 to check, if it is analyzed when a new partition is attached.
 -- These should not be present in the root stats, after attach/detach of partition
 insert into rootTabLeaf1 select i%10 from generate_series(5,9)i;
 
@@ -339,7 +339,7 @@ alter table rootTabMid1 attach partition rootTabLeaf1 for values from (0) to (10
 create table rootTabLeaf2(a int);
 insert into rootTabLeaf2 select i%20 from generate_series(10,19)i;
 
--- 3. Update rootTabLeaf1 to check, if it is analyzed when a new partiton is attached.
+-- 3. Update rootTabLeaf1 to check, if it is analyzed when a new partition is attached.
 -- These should not be present in the root stats, after attach/detach of partition
 insert into rootTabLeaf1 select i%10 from generate_series(5,9)i;
 
