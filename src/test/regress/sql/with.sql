@@ -1187,3 +1187,22 @@ create temp table with_test (i int);
 with with_test as (select 42) insert into with_test select * from with_test;
 select * from with_test;
 drop table with_test;
+
+--
+-- ISSUE 17462
+--
+CREATE TABLE t_17462(a integer);
+EXPLAIN(COSTS OFF, VERBOSE) WITH ins AS (
+  INSERT INTO t_17462(a) VALUES (1), (2), (3)
+  RETURNING a
+)
+SELECT sum(a) INTO t_17462_1 FROM ins;
+DROP TABLE t_17462;
+
+CREATE TABLE t_17462_relp(a integer) distributed replicated;
+EXPLAIN(COSTS OFF, VERBOSE) WITH ins AS (
+  INSERT INTO t_17462_relp(a) VALUES (1), (2), (3)
+  RETURNING a
+)
+SELECT sum(a) INTO t_17462_relp_1 FROM ins;
+DROP TABLE t_17462_relp;
