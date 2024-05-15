@@ -713,6 +713,18 @@ set optimizer_parallel_union to off;
 drop table if exists my_table;
 
 --
+-- test Github issue https://github.com/greenplum-db/gpdb/issues/17474
+--
+create table r_17474(a int) distributed replicated;
+insert into r_17474 select generate_series(1,10);
+create table p1_17474(a int) distributed by (a);
+insert into p1_17474 select generate_series(1,3);
+explain(costs off) with result as (update r_17474 set a = a +1 where a < 5 returning *) select * from result except select * from p1_17474;
+with result as (update r_17474 set a = a +1 where a < 5 returning *) select * from result except select * from p1_17474;
+drop table r_17474;
+drop table p1_17474;
+
+--
 -- Clean up
 --
 
