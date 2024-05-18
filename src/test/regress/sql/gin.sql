@@ -51,3 +51,13 @@ select count(*) > 0 as ok from gin_test_tbl where i @> array[1];
 select count(*) > 0 as ok from gin_test_tbl where i @> array[1];
 
 reset gin_fuzzy_search_limit;
+
+--
+-- Github issue: https://github.com/greenplum-db/gpdb/issues/17456
+--
+begin;
+create table t_issue_17456(i int4[]) with (appendonly=true);
+create index t_issue_17456_idx on t_issue_17456 using gin (i)
+  with (fastupdate = on, gin_pending_list_limit = 4096);
+insert into t_issue_17456 select array[1, 2, g] from generate_series(1, 400000) g;
+abort;
